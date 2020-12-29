@@ -2,7 +2,7 @@ const express = require('express');
 const sms = require('../controllers/vodacom.controller.js');
 const router = express.Router();
 
-//router.get('/test', sms.smsSend);
+router.get('/', sms.sendText);
 //router.get('/feedback', sms.sendFeedback);
 //router.get('/invoice', sms.sendInvoice);
 //router.get('/bulk', sms.sendCoupon);

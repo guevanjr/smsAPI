@@ -96,7 +96,6 @@ session.on('pdu', function(pdu){
 })
 
 
-
 exports.sendText = async function (req, res, id) {
     let results = req.body;
     console.log(results);
