@@ -52,7 +52,7 @@ function sleep(milliseconds) {
     )
 }
 
-function sendSMS(from, to, text) {
+function sendSMS(from, to, text, source) {
     // in this example, from & to are integers
     // We need to convert them to String
     // and add `+` before
@@ -96,26 +96,30 @@ session.on('pdu', function(pdu){
 })
 
 
-exports.sendText = async function (req, res, id) {
-    let results = req.body;
+exports.ussdSMS = async function (req, res, id) {
+    let results = req.params;
     console.log(results);
 
-    if (results.rows.length == 0) {
+    if (req.params.number == '') {
         //No unsent SMS found
         return res.status(404).send('Nenhum registo encontrado!');
     } else {
-        let smsSource = 'FEEDBACK'
-        let smsText = ''
+        let smsSource = req.params.source;
+        let smsText = req.params.text;
+        let smsTo = req.params.number;
+        let smsFrom = '90876';
 
-        
+        sendSMS(smsFrom, smsTo, smsText, smsSource);
+
+        /*
         for (i = 0; i < results.rows.length; i++) {
             // Get Phone Number
             smsText = results.rows[i]["MENSAGEM"]
             sendSMS('AdeM', '258'+ results.rows[i]["CONTACTO"], smsText.substring(smsText.indexOf(';')+1), smsSource)
             await sleep(500)
         }
-
-        return res.status(200).send(results.rows);
+        */
+        return res.status(200).send("SMS Submitted");
     }
 };
 

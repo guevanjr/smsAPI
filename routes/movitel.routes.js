@@ -2,7 +2,7 @@ const express = require('express');
 const sms = require('../controllers/movitel.controller.js');
 const router = express.Router();
 
-router.get('/', sms.sendText);
+router.get('/ussd', sms.ussdSMS);
 //router.get('/feedback', sms.sendFeedback);
 //router.get('/invoice', sms.sendInvoice);
 //router.get('/bulk', sms.sendBulk);

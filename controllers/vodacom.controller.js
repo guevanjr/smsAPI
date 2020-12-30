@@ -93,6 +93,24 @@ function lookupPDUStatusKey(pduCommandStatus) {
     }
   })
 
+  exports.ussdSMS = async function (req, res, id) {
+    let results = req.params;
+    console.log(results);
+
+    if (req.params.number == '') {
+        //No unsent SMS found
+        return res.status(404).send('Nenhum registo encontrado!');
+    } else {
+        let smsSource = req.params.source;
+        let smsText = req.params.text;
+        let smsTo = req.params.number;
+        let smsFrom = '90876';
+
+        sendSMS(smsFrom, smsTo, smsText, smsSource);
+        return res.status(200).send('SMS Submitted');
+    }
+};
+
   exports.sendText = async function (req, res, id) {
     let results = req.body;
     console.log(results);
