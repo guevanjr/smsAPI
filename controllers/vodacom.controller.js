@@ -87,7 +87,7 @@ function sendSMS(from, to, text, source) {
       var toNumber = pdu.destination_addr.toString();
       
       var text = '';
-      if (pdu.short_message && pdu.short_message.message_payload) {
+      if (pdu.short_message && pdu.short_message.message) {
         text = pdu.short_message.message_payload;
       }
       
@@ -99,7 +99,7 @@ function sendSMS(from, to, text, source) {
   })
 
   exports.ussdSMS = async function (req, res, id) {
-    let results = req.params;
+    let results = req; //.params;
     console.log(results);
 
     if (req.params.number == null || req.params.number == undefined) {
