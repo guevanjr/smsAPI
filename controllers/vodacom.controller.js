@@ -50,17 +50,17 @@ function lookupPDUStatusKey(pduCommandStatus) {
     )
 }
 
-  function sendSMS(from, to, text) {
+  function sendSMS(from, to, text, source) {
     // in this example, from & to are integers
     // We need to convert them to String
     // and add `+` before
     
-    from = from.toString();
-    to   = '+' + to.toString();
+    let smsFrom = from;
+    let smsTo   = '+'.concat(to);
     
     session.submit_sm({
-        source_addr:      from,
-        destination_addr: to,
+        source_addr:      smsFrom,
+        destination_addr: smsTo,
         short_message:    text
     }, function(pdu) {
       console.log('Vodacom SMS PDU Status', lookupPDUStatusKey(pdu.command_status));
@@ -97,7 +97,7 @@ function lookupPDUStatusKey(pduCommandStatus) {
     let results = req.params;
     console.log(results);
 
-    if (req.params.number == '') {
+    if (req.params.number == null || req.params.number == undefined) {
         //No unsent SMS found
         return res.status(404).send('Nenhum registo encontrado!');
     } else {

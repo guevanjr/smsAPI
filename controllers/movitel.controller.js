@@ -57,12 +57,12 @@ function sendSMS(from, to, text, source) {
     // We need to convert them to String
     // and add `+` before
     
-    from = from.toString();
-    to   = to.toString();
+    let smsFrom = from;
+    let smsTo   = to;
     
     session.submit_sm({
-        source_addr:      from,
-        destination_addr: to,
+        source_addr:      smsFrom,
+        destination_addr: smsTo,
         short_message:    text
     }, function(pdu) {
       console.log('Movitel SMS PDU Status', lookupPDUStatusKey(pdu.command_status));
