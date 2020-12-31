@@ -53,6 +53,8 @@ function lookupPDUStatusKey(pduCommandStatus) {
 function sendSMS(from, to, text, source) {  
     let smsFrom = from;
     let smsTo   = '+'.concat(to);
+    let smsText = text;
+    let smsSource = source;
 
     session.submit_sm({
         source_addr: smsFrom, 

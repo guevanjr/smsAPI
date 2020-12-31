@@ -59,7 +59,9 @@ function sendSMS(from, to, text, source) {
     
     let smsFrom = from;
     let smsTo   = to;
-    
+    let smsText = text;
+    let smsSource = source;
+
     session.submit_sm({
         source_addr: smsFrom, 
         destination_addr: smsTo, // this is very important so make sure you have included + sign before ISD code to send sms
