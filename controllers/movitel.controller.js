@@ -9,9 +9,9 @@ session.on('connect', function(){
 
   session.bind_transceiver({
       system_id: 'Punctual',
-      password: 'Acb!@123',
+      password: 'Acb!@123'/*,
       addr_ton: 5,
-      addr_npi: 1,
+      addr_npi: 1,*/
   }, function(pdu) {
     console.log('pdu status', lookupPDUStatusKey(pdu.command_status));
     if (pdu.command_status == 0) {
@@ -68,13 +68,13 @@ function sendSMS(from, to, text, source) {
         short_message: smsText,
         source_addr_ton: 5,
         source_addr_npi: 1,
-        request_delivery: 1
+        registered_delivery: 1
     }, async function(pdu) {
         console.log('SMS Submit PDU Status: ', lookupPDUStatusKey(pdu.command_status));
         if (pdu.command_status == 0) {
             // Message successfully sent
-            smsId = pdu.message_id;
-            smsStatus = 'Sent';
+            let smsId = pdu.message_id;
+            let smsStatus = 'Sent';
             console.log('Message ID: ' + smsId + ' ' + smsStatus);
         } else {
             console.log('SMS Not Sent: ' + pdu.command_status)
