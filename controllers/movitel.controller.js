@@ -61,14 +61,21 @@ function sendSMS(from, to, text, source) {
     let smsTo   = to;
     
     session.submit_sm({
-        source_addr:      smsFrom,
-        destination_addr: smsTo,
-        short_message:    text
-    }, function(pdu) {
-      console.log('Movitel SMS PDU Status', lookupPDUStatusKey(pdu.command_status));
+        source_addr: smsFrom, 
+        destination_addr: smsTo, // this is very important so make sure you have included + sign before ISD code to send sms
+        short_message: smsText,
+        source_addr_ton: 5,
+        source_addr_npi: 1,
+        request_delivery: 1
+    }, async function(pdu) {
+        console.log('SMS Submit PDU Status: ', lookupPDUStatusKey(pdu.command_status));
         if (pdu.command_status == 0) {
             // Message successfully sent
-            console.log(pdu.message_id);
+            smsId = pdu.message_id;
+            smsStatus = 'Sent';
+            console.log('Message ID: ' + smsId + ' ' + smsStatus);
+        } else {
+            console.log('SMS Not Sent: ' + pdu.command_status)
         }
     });
 }
