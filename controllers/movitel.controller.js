@@ -106,16 +106,16 @@ session.on('pdu', function(pdu){
 
 
 exports.ussdSMS = async function (req, res, id) {
-    let results = req.params;
+    let results = req.query;
     console.log(results);
 
-    if (req.params.number == '') {
+    if (req.query.number == null || req.query.number == undefined) {
         //No unsent SMS found
         return res.status(404).send('Nenhum registo encontrado!');
     } else {
-        let smsSource = req.params.source;
-        let smsText = req.params.text;
-        let smsTo = req.params.number;
+        let smsSource = req.query.source;
+        let smsText = req.query.text;
+        let smsTo = req.query.number;
         let smsFrom = '90876';
 
         sendSMS(smsFrom, smsTo, smsText, smsSource);
