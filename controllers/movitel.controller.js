@@ -92,12 +92,12 @@ session.on('pdu', function(pdu){
       var fromNumber = pdu.source_addr.toString();
       var toNumber = pdu.destination_addr.toString();
       
-      var text = '';
+      var text = '';/*
       if (pdu.short_message && pdu.short_message.message) {
         text = pdu.short_message.message;
       }
-      
-      console.log('Movitel SMS From ' + from + ' To ' + to + ': ' + text);
+      */
+      console.log('Movitel SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
     
       // Reply to SMSC that we received and processed the SMS
       session.deliver_sm_resp({ sequence_number: pdu.sequence_number });
