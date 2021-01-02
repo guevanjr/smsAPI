@@ -91,7 +91,7 @@ function sendSMS(from, to, text, source) {
         text = pdu.short_message.message_payload;
       }
       
-      console.log('Vodacom SMS From ' + from + ' To ' + to + ': ' + text);
+      console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
     
       // Reply to SMSC that we received and processed the SMS
       session.deliver_sm_resp({ sequence_number: pdu.sequence_number });
@@ -109,7 +109,7 @@ function sendSMS(from, to, text, source) {
         let smsSource = req.query.source;
         let smsText = req.query.text;
         let smsTo = req.query.number;
-        let smsFrom = '90876';
+        let smsFrom = req.query.from;
 
         sendSMS(smsFrom, smsTo, smsText, smsSource);
         return res.status(200).send('SMS Submitted');
