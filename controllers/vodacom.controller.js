@@ -60,8 +60,8 @@ function sendSMS(from, to, text, source) {
         source_addr: smsFrom, 
         destination_addr: smsTo, // this is very important so make sure you have included + sign before ISD code to send sms
         short_message: smsText,
-        //source_addr_ton: 5,
-        //source_addr_npi: 1,
+        source_addr_ton: 5,
+        source_addr_npi: 1,
         registered_delivery: 1
     }, async function(pdu) {
         console.log('SMS Submit PDU Status: ', lookupPDUStatusKey(pdu.command_status));
@@ -88,7 +88,7 @@ function sendSMS(from, to, text, source) {
       
       var text = '';
       if (pdu.short_message && pdu.short_message.message) {
-        text = pdu.short_message.message_payload;
+        text = pdu.short_message.message;
       }
       
       console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
