@@ -1,5 +1,5 @@
 var smpp = require('smpp');
-var session = new smpp.Session({host: '10.229.55.11', port: 9876});
+var session = new smpp.Session({host: '10.229.63.11', port: 9876});
 
 // We will track connection state for re-connecting
 var didConnect = false; 
@@ -31,7 +31,7 @@ function lookupPDUStatusKey(pduCommandStatus) {
 function connectSMPP() {
     console.log('Movitel SMPP Reconnecting');
     session.connect();
-    session = new smpp.Session({host: '10.229.55.11', port: 9876});
+    session = new smpp.Session({host: '10.229.63.11', port: 9876});
 }
   
 session.on('close', function(){
