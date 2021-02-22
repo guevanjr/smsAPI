@@ -116,7 +116,7 @@ exports.ussdSMS = async function (req, res, id) {
         let smsSource = req.query.source;
         let smsText = req.query.text;
         let smsTo = req.query.number;
-        let smsFrom = '90876';
+        let smsFrom = 'AdeM-USSD'; //90876';
 
         sendSMS(smsFrom, smsTo, smsText, smsSource);
 
