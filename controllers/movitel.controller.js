@@ -89,14 +89,14 @@ session.on('pdu', function(pdu){
     if (pdu.command == 'deliver_sm') {
       
       // no '+' here
-      var fromNumber = pdu.source_addr.toString();
-      var toNumber = pdu.destination_addr.toString();
+      var toNumber = pdu.source_addr.toString();
+      var fromNumber = pdu.destination_addr.toString();
       
-      var text = '';/*
+      var text = '';
       if (pdu.short_message && pdu.short_message.message) {
         text = pdu.short_message.message;
       }
-      */
+      
       console.log('Movitel SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
     
       // Reply to SMSC that we received and processed the SMS
@@ -116,7 +116,7 @@ exports.ussdSMS = async function (req, res, id) {
         let smsSource = req.query.source;
         let smsText = req.query.text;
         let smsTo = req.query.number;
-        let smsFrom = 'AdeM-USSD'; //90876';
+        let smsFrom = req.query.from;//'AdeM-USSD'; //90876';
 
         sendSMS(smsFrom, smsTo, smsText, smsSource);
 
