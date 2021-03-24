@@ -99,17 +99,17 @@ function sendSMS(from, to, text, source) {
   })
 
   exports.ussdSMS = async function (req, res, id) {
-    let results = req.query; //.params;
+    let results = req.body; //.params;
     console.log(results);
 
-    if (req.query.number == null || req.query.number == undefined) {
+    if (req.body.number == null || req.body.number == undefined) {
         //No unsent SMS found
         return res.status(404).send('Nenhum registo encontrado!');
     } else {
-        let smsSource = req.query.source;
-        let smsText = req.query.text;
-        let smsTo = req.query.number;
-        let smsFrom = req.query.from;
+        let smsSource = req.body.source;
+        let smsText = req.body.text;
+        let smsTo = req.body.number;
+        let smsFrom = req.body.from;
 
         sendSMS(smsFrom, smsTo, smsText, smsSource);
         return res.status(200).send('SMS Submitted');
