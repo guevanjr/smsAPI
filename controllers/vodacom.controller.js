@@ -1,5 +1,12 @@
 var smpp = require('smpp');
 var session = new smpp.Session({host: '10.201.47.17', port: 5016});
+const redis = require('redis');
+const client = redis.createClient();
+var smsId = '';
+
+client.on('connect', function() {
+console.log('Redis Connected ...')
+})
 
 // We will track connection state for re-connecting
 var didConnect = false; 
@@ -67,7 +74,7 @@ function sendSMS(from, to, text, source) {
         console.log('SMS Submit PDU Status: ', lookupPDUStatusKey(pdu.command_status));
         if (pdu.command_status == 0) {
             // Message successfully sent
-            let smsId = pdu.message_id;
+            smsId = pdu.message_id;
             let smsStatus = 'Sent';
             console.log('Message ID: ' + smsId + ' ' + smsStatus);
         } else {
@@ -91,7 +98,8 @@ function sendSMS(from, to, text, source) {
         text = pdu.short_message.message;
       }
       
-      console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
+      client.RPUSH(smsId, text, fromNumber, toNumber);
+	console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
     
       // Reply to SMSC that we received and processed the SMS
       session.deliver_sm_resp({ sequence_number: pdu.sequence_number });
