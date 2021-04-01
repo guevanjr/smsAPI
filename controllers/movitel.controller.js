@@ -1,6 +1,15 @@
 var smpp = require('smpp');
 var session = new smpp.Session({host: '10.229.63.11', port: 9876});
 
+const { Pool } = require('pg')
+const pool = new Pool({
+  user: '{user}',
+  host: '{host}',
+  database: '{database}',
+  password: '{password}',
+  port: 5432,
+});
+
 // We will track connection state for re-connecting
 var didConnect = false; 
 

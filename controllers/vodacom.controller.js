@@ -1,12 +1,22 @@
 var smpp = require('smpp');
 var session = new smpp.Session({host: '10.201.47.17', port: 5016});
-const redis = require('redis');
-const client = redis.createClient();
-var smsId = '';
-
-client.on('connect', function() {
-console.log('Redis Connected ...')
+//const redis = require('redis');
+//const client = redis.createClient();
+const { Pool } = require('pg')
+const pool = new Pool({
+  user: 'adem',
+  host: 'localhost',
+  database: 'adem',
+  password: 'AdeM123',
+  port: 5432
 })
+
+var smsId = '';
+var smsStatus = '';
+
+//client.on('connect', function() {
+//console.log('Redis Connected ...')
+//})
 
 // We will track connection state for re-connecting
 var didConnect = false; 
@@ -57,7 +67,7 @@ function lookupPDUStatusKey(pduCommandStatus) {
     )
 }
 
-function sendSMS(from, to, text, source) {  
+function sendSMS(from, to, text, source, type) {  
     let smsFrom = from;
     let smsTo   = '+'.concat(to);
     let smsText = text;
@@ -75,36 +85,54 @@ function sendSMS(from, to, text, source) {
         if (pdu.command_status == 0) {
             // Message successfully sent
             smsId = pdu.message_id;
-            let smsStatus = 'Sent';
-            console.log('Message ID: ' + smsId + ' ' + smsStatus);
+            smsStatus = 'SEND_SUCCESS';
+            //console.log('Message ID: ' + smsId + ' ' + smsStatus);
         } else {
-            console.log('SMS Not Sent: ' + pdu.command_status)
+            smsStatus = 'SEND_ERROR';
+            //console.log('SMS Not Sent: ' + pdu.command_status)
         }
+
+        updateSMSLogs(smsId, smsFrom, smsTo, source, type, text);
+      });
+}
+
+function updateSMSLogs(messageId, phoneNumber, senderId, messageSource, messageType, messageText) { 
+    var sqlText = "INSERT INTO sms_logs(messageid, fromnumber, tonumber, status, datetime, source, type, operator, message) VALUES(" + 
+        messageId + "," + 
+        phoneNumber + "," +
+        senderId + "," +
+        new Date() + "," +
+        messageSource + "," +
+        messageType + ",'Vodacom'," + 
+        messageText + ");";
+
+    //client.RPUSH(smsId, text, fromNumber, toNumber);
+    pool.query(sqlText, (err, res) => {
+        console.log(err, res) 
+        pool.end() 
     });
 }
 
-
-  session.on('pdu', function(pdu){
-
-    // incoming SMS from SMSC
-    if (pdu.command == 'deliver_sm') {
-      
-      // no '+' here
-      var fromNumber = pdu.source_addr.toString();
-      var toNumber = pdu.destination_addr.toString();
-      
-      var text = '';
-      if (pdu.short_message && pdu.short_message.message) {
-        text = pdu.short_message.message;
-      }
-      
-      client.RPUSH(smsId, text, fromNumber, toNumber);
-	console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
+session.on('pdu', function(pdu){
+  // incoming SMS from SMSC
+  if (pdu.command == 'deliver_sm') {
     
-      // Reply to SMSC that we received and processed the SMS
-      session.deliver_sm_resp({ sequence_number: pdu.sequence_number });
+    // no '+' here
+    var fromNumber = pdu.source_addr.toString();
+    var toNumber = pdu.destination_addr.toString();
+    
+    var text = '';
+    if (pdu.short_message && pdu.short_message.message) {
+        text = pdu.short_message.message;
     }
-  })
+    
+    updateSMSLogs(pdu.message_id, fromNumber, toNumber, 'VODACOM_SMSC', 'DELIVRY_MSG', text);
+    console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
+  
+    // Reply to SMSC that we received and processed the SMS
+    session.deliver_sm_resp({ sequence_number: pdu.sequence_number });
+  }
+})
 
   exports.ussdSMS = async function (req, res, id) {
     let results = req.body; //.params;
