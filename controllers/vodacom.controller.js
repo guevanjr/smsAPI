@@ -72,6 +72,7 @@ function sendSMS(from, to, text, source, type) {
     let smsTo   = '+'.concat(to);
     let smsText = text;
     let smsSource = source;
+    let smsType = type;
 
     session.submit_sm({
         source_addr: smsFrom, 
@@ -83,16 +84,16 @@ function sendSMS(from, to, text, source, type) {
     }, async function(pdu) {
         console.log('SMS Submit PDU Status: ', lookupPDUStatusKey(pdu.command_status));
         if (pdu.command_status == 0) {
-            // Message successfully sent
+            // Message successfully submitted
             smsId = pdu.message_id;
             smsStatus = 'SEND_SUCCESS';
-            //console.log('Message ID: ' + smsId + ' ' + smsStatus);
         } else {
+            // Message submission Error
             smsStatus = 'SEND_ERROR';
-            //console.log('SMS Not Sent: ' + pdu.command_status)
         }
 
-        updateSMSLogs(smsId, smsFrom, smsTo, source, type, text);
+        updateSMSLogs(smsId, smsFrom, smsTo, smsSource, smsType, smsText);
+        console.log(smsStatus.concat(': ', smsFrom));
       });
 }
 
@@ -109,7 +110,7 @@ function updateSMSLogs(messageId, phoneNumber, senderId, messageSource, messageT
     //client.RPUSH(smsId, text, fromNumber, toNumber);
     pool.query(sqlText, (err, res) => {
         console.log(err, res) 
-        pool.end() 
+        //pool.end() 
     });
 }
 
@@ -118,8 +119,8 @@ session.on('pdu', function(pdu){
   if (pdu.command == 'deliver_sm') {
     
     // no '+' here
-    var fromNumber = pdu.source_addr.toString();
-    var toNumber = pdu.destination_addr.toString();
+    var toNumber = pdu.source_addr.toString();
+    var fromNumber = pdu.destination_addr.toString();
     
     var text = '';
     if (pdu.short_message && pdu.short_message.message) {
@@ -146,8 +147,9 @@ session.on('pdu', function(pdu){
         let smsText = req.body.text;
         let smsTo = req.body.number;
         let smsFrom = req.body.from;
+        let smsType = req.body.type;
 
-        sendSMS(smsFrom, smsTo, smsText, smsSource);
+        sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
         return res.status(200).send('SMS Submitted');
     }
 };
