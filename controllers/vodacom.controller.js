@@ -98,14 +98,14 @@ function sendSMS(from, to, text, source, type) {
 }
 
 function updateSMSLogs(messageId, phoneNumber, senderId, messageSource, messageType, messageText) { 
-    var sqlText = "INSERT INTO sms_logs(messageid, fromnumber, tonumber, status, datetime, source, type, operator, message) VALUES(" + 
-        messageId + "," + 
-        phoneNumber + "," +
-        senderId + "," +
-        new Date() + "," +
-        messageSource + "," +
-        messageType + ",'Vodacom'," + 
-        messageText + ");";
+    var sqlText = "INSERT INTO sms_logs(messageid, fromnumber, tonumber, status, datetime, source, type, operator, message) VALUES('" + 
+        messageId + "','" + 
+        phoneNumber + "','" +
+        senderId + "'," +
+        new Date() + ",'" +
+        messageSource + "','" +
+        messageType + "','Vodacom','" + 
+        messageText + "');";
 
     //client.RPUSH(smsId, text, fromNumber, toNumber);
     pool.query(sqlText, (err, res) => {
@@ -136,8 +136,8 @@ session.on('pdu', function(pdu){
 })
 
   exports.ussdSMS = async function (req, res, id) {
-    let results = req.body; //.params;
-    console.log(results);
+    //let results = req.body; //.params;
+    //console.log(results);
 
     if (req.body.number == null || req.body.number == undefined) {
         //No unsent SMS found
