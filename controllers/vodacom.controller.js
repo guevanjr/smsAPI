@@ -98,7 +98,7 @@ function sendSMS(from, to, text, source, type) {
 }
 
 function updateSMSLogs(messageId, phoneNumber, senderId, messageSource, messageType, messageText) { 
-    var curDateTime = new Date(Date.now()).toISOString();
+    var curDateTime = new Date(Date.now()).toISOString().replace('T',' ').replace('Z','');
     var sqlText = "INSERT INTO sms_logs(messageid, fromnumber, tonumber, status, datetime, source, type, operator, message) VALUES('" + 
         messageId + "','" + 
         phoneNumber + "','" +
