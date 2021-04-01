@@ -110,12 +110,14 @@ function updateSMSLogs(messageId, phoneNumber, senderId, messageStatus, messageS
         curDateTime + "','" +
         messageSource + "','" +
         messageType + 
-        "','Vodacom','" + 
+        "','Movitel','" + 
         messageText + "');";
 
     //client.RPUSH(smsId, text, fromNumber, toNumber);
     pool.query(sqlText, (err, res) => {
-        console.log(err, res.rowCount) 
+        if (err) throw err;
+
+        console.log(res.rowCount + "row(s) inserted.") 
         //pool.end() 
     });
 }
@@ -133,11 +135,11 @@ session.on('pdu', function(pdu){
       if (pdu.short_message && pdu.short_message.message) {
         text = pdu.short_message.message;
         smsStatus = text.split(' ');
-        console.log('Status: ' + smsStatus[7]);
+        console.log('Status: ' + smsStatus[5]);
       }
       
-      updateSMSLogs(pdu.message_id, fromNumber.replace('+',''), toNumber.replace('+',''), smsStatus[7].replace('stat:', '').trim(), 'VODACOM_SMSC', 'DELIVRY_MSG', text);
-      console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
+      updateSMSLogs(pdu.message_id, fromNumber.replace('+',''), toNumber.replace('+',''), smsStatus[5].replace('stat:', '').trim(), 'MOVITEL_SMSC', 'DELIVRY_MSG', text);
+      //console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
       
       // Reply to SMSC that we received and processed the SMS
       session.deliver_sm_resp({ sequence_number: pdu.sequence_number });
