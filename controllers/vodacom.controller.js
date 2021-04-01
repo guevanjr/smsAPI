@@ -131,10 +131,10 @@ session.on('pdu', function(pdu){
     if (pdu.short_message && pdu.short_message.message) {
         text = pdu.short_message.message;
         smsStatus = text.split(' ');
-        console.log('Status: ' + smsStatus);
+        console.log('Status: ' + smsStatus[7]);
     }
     
-    updateSMSLogs(pdu.message_id, fromNumber, toNumber, smsStatus[7], 'VODACOM_SMSC', 'DELIVRY_MSG', text);
+    updateSMSLogs(pdu.message_id, fromNumber.replace('+',''), toNumber.replace('+',''), smsStatus[7].replace('stat:', '').trim(), 'VODACOM_SMSC', 'DELIVRY_MSG', text);
     console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
   
     // Reply to SMSC that we received and processed the SMS
