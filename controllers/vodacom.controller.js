@@ -103,8 +103,8 @@ function updateSMSLogs(messageId, phoneNumber, senderId, messageStatus, messageS
 
     var sqlText = "INSERT INTO sms_logs(messageid, fromnumber, tonumber, status, datetime, source, type, operator, message) VALUES('" + 
         messageId + "','" + 
-        phoneNumber + "','" +
-        senderId + "','" +
+        phoneNumber.replace('+','') + "','" +
+        senderId.replace('+','') + "','" +
         messageStatus + "','" +
         curDateTime + "','" +
         messageSource + "','" +
