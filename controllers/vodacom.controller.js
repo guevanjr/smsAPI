@@ -92,12 +92,12 @@ function sendSMS(from, to, text, source, type) {
             smsStatus = 'SEND_ERROR';
         }
 
-        updateSMSLogs(smsId, smsFrom, smsTo, smsSource, smsType, smsText);
+        updateSMSLogs(smsId, smsFrom, smsTo, smsStatus, smsSource, smsType, smsText);
         console.log(smsStatus.concat(': ', smsTo));
       });
 }
 
-function updateSMSLogs(messageId, phoneNumber, senderId, messageSource, messageType, messageText) { 
+function updateSMSLogs(messageId, phoneNumber, senderId, messageStatus, messageSource, messageType, messageText) { 
     var curDateTime = new Date(Date.now()).toISOString().replace('T',' ').substr(0, 19);
     console.log(curDateTime);
 
@@ -105,9 +105,11 @@ function updateSMSLogs(messageId, phoneNumber, senderId, messageSource, messageT
         messageId + "','" + 
         phoneNumber + "','" +
         senderId + "','" +
+        messageStatus + "','" +
         curDateTime + "','" +
         messageSource + "','" +
-        messageType + "','Vodacom','" + 
+        messageType + 
+        "','Vodacom','" + 
         messageText + "');";
 
     //client.RPUSH(smsId, text, fromNumber, toNumber);
@@ -128,9 +130,10 @@ session.on('pdu', function(pdu){
     var text = '';
     if (pdu.short_message && pdu.short_message.message) {
         text = pdu.short_message.message;
+        smsStatus = text.substring(text.indexOf('stat:') + 5, text.indexOf('err:') - text.indexOf('stat:') + 5).trim();
     }
     
-    updateSMSLogs(pdu.message_id, fromNumber, toNumber, 'VODACOM_SMSC', 'DELIVRY_MSG', text);
+    updateSMSLogs(pdu.message_id, fromNumber, toNumber, smsStatus, 'VODACOM_SMSC', 'DELIVRY_MSG', text);
     console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
   
     // Reply to SMSC that we received and processed the SMS
