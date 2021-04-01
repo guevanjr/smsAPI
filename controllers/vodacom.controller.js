@@ -82,7 +82,7 @@ function sendSMS(from, to, text, source, type) {
         source_addr_npi: 1,
         registered_delivery: 1
     }, async function(pdu) {
-        console.log('SMS Submit PDU Status: ', lookupPDUStatusKey(pdu.command_status));
+        //console.log('SMS Submit PDU Status: ', lookupPDUStatusKey(pdu.command_status));
         if (pdu.command_status == 0) {
             // Message successfully submitted
             smsId = pdu.message_id;
@@ -114,7 +114,7 @@ function updateSMSLogs(messageId, phoneNumber, senderId, messageStatus, messageS
 
     //client.RPUSH(smsId, text, fromNumber, toNumber);
     pool.query(sqlText, (err, res) => {
-        console.log(err, res) 
+        console.log(err, res.rowCount) 
         //pool.end() 
     });
 }
@@ -142,7 +142,7 @@ session.on('pdu', function(pdu){
   }
 })
 
-  exports.ussdSMS = async function (req, res, id) {
+exports.ussdSMS = async function (req, res, id) {
     //let results = req.body; //.params;
     //console.log(results);
 
