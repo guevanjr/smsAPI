@@ -24,5 +24,5 @@ app.use('/vodacom', vodacomRoutes);
 
 // listen for requests
 app.listen(5000, () => {
-    console.log("SMS Server is listening on port 5000");
+    console.log("SMS Server is listening on port 5000\n" + new Date(Date.now()).toISOString().replace('T',' ').substr(0, 19));
 });

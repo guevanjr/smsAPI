@@ -93,17 +93,19 @@ function sendSMS(from, to, text, source, type) {
         }
 
         updateSMSLogs(smsId, smsFrom, smsTo, smsSource, smsType, smsText);
-        console.log(smsStatus.concat(': ', smsFrom));
+        console.log(smsStatus.concat(': ', smsTo));
       });
 }
 
 function updateSMSLogs(messageId, phoneNumber, senderId, messageSource, messageType, messageText) { 
-    var curDateTime = new Date(Date.now()).toISOString().replace('T',' ').replace('Z','');
+    var curDateTime = new Date(Date.now()).toISOString().replace('T',' ').substr(0, 19);
+    console.log(curDateTime);
+
     var sqlText = "INSERT INTO sms_logs(messageid, fromnumber, tonumber, status, datetime, source, type, operator, message) VALUES('" + 
         messageId + "','" + 
         phoneNumber + "','" +
-        senderId + "'," +
-        curDateTime + ",'" +
+        senderId + "','" +
+        curDateTime + "','" +
         messageSource + "','" +
         messageType + "','Vodacom','" + 
         messageText + "');";
