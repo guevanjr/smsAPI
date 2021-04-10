@@ -82,7 +82,6 @@ function sendSMS(from, to, text, source, type) {
         source_addr_npi: 1,
         registered_delivery: 1
     }, async function(pdu) {
-        //console.log('SMS Submit PDU Status: ', lookupPDUStatusKey(pdu.command_status));
         if (pdu.command_status == 0) {
             // Message successfully submitted
             smsId = pdu.message_id;
@@ -95,6 +94,8 @@ function sendSMS(from, to, text, source, type) {
         updateSMSLogs(smsId, smsFrom, smsTo, smsStatus, smsSource, smsType, smsText);
         console.log(smsStatus.concat(': ', smsTo));
       });
+
+      return smsStatus;
 }
 
 function updateSMSLogs(messageId, phoneNumber, senderId, messageStatus, messageSource, messageType, messageText) { 
@@ -156,8 +157,8 @@ exports.ussdSMS = async function (req, res, id) {
         let smsFrom = req.body.from;
         let smsType = req.body.type;
 
-        sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
-        return res.status(200).send('SMS Submitted');
+        let status = sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
+        return res.status(200).send(status);
     }
 };
 
@@ -173,7 +174,7 @@ exports.ussdSMS = async function (req, res, id) {
         let smsText = ''
 
         
-        for (i = 0; i < results.rows.length; i++) {
+        for (let i = 0; i < results.rows.length; i++) {
             // Get Phone Number
             smsText = results.rows[i]["MENSAGEM"]
             sendSMS('AdeM', '258'+ results.rows[i]["CONTACTO"], smsText.substring(smsText.indexOf(';')+1), smsSource)

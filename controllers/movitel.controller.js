@@ -96,6 +96,8 @@ function sendSMS(from, to, text, source, type) {
         updateSMSLogs(smsId, smsFrom, smsTo, smsStatus, smsSource, smsType, smsText);
         console.log(smsStatus.concat(': ', smsTo));
       });
+
+      return smsStatus;
 }
 
 function updateSMSLogs(messageId, phoneNumber, senderId, messageStatus, messageSource, messageType, messageText) { 
@@ -117,32 +119,31 @@ function updateSMSLogs(messageId, phoneNumber, senderId, messageStatus, messageS
     pool.query(sqlText, (err, res) => {
         if (err) throw err;
 
-        console.log(res.rowCount + "row(s) inserted.") 
+        console.log(res.rowCount + " row(s) inserted.") 
         //pool.end() 
     });
 }
 
 session.on('pdu', function(pdu){
-
     // incoming SMS from SMSC
     if (pdu.command == 'deliver_sm') {
-      
-      // no '+' here
-      var toNumber = pdu.source_addr.toString();
-      var fromNumber = pdu.destination_addr.toString();
-      
-      var text = '';
-      if (pdu.short_message && pdu.short_message.message) {
-        text = pdu.short_message.message;
-        smsStatus = text.split(' ');
-        console.log('Status: ' + smsStatus[5]);
-      }
-      
-      updateSMSLogs(pdu.message_id, fromNumber.replace('+',''), toNumber.replace('+',''), smsStatus[5].replace('stat:', '').trim(), 'MOVITEL_SMSC', 'DELIVRY_MSG', text);
-      //console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
-      
-      // Reply to SMSC that we received and processed the SMS
-      session.deliver_sm_resp({ sequence_number: pdu.sequence_number });
+        
+        // no '+' here
+        var toNumber = pdu.source_addr.toString();
+        var fromNumber = pdu.destination_addr.toString();
+        
+        var text = '';
+        if (pdu.short_message && pdu.short_message.message) {
+            text = pdu.short_message.message;
+            smsStatus = text.split(' ');
+            console.log('Status: ' + smsStatus[5]);
+        }
+        
+        updateSMSLogs(pdu.message_id, fromNumber.replace('+',''), toNumber.replace('+',''), smsStatus[5].replace('stat:', '').trim(), 'MOVITEL_SMSC', 'DELIVRY_MSG', text);
+        //console.log('Vodacom SMS From ' + fromNumber + ' To ' + toNumber + ': ' + text);
+        
+        // Reply to SMSC that we received and processed the SMS
+        session.deliver_sm_resp({ sequence_number: pdu.sequence_number });
     }
 })
 
@@ -160,8 +161,10 @@ exports.ussdSMS = async function (req, res, id) {
         let smsFrom = req.body.from;
         let smsType = req.body.type;
 
-        sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
-        return res.status(200).send('SMS Submitted');
+        let status = sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
+        return res.status(200).send(status);
+//        sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
+//        return res.status(200).send('SMS Submitted');
     }
 };
 
