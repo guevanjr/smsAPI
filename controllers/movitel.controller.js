@@ -162,6 +162,7 @@ exports.ussdSMS = async function (req, res, id) {
         let smsType = req.body.type;
 
         let status = sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
+        console.log('SMS to ' + smsTo + ': ' + status);
         return res.status(200).send(status);
 //        sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
 //        return res.status(200).send('SMS Submitted');
