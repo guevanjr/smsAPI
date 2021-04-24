@@ -163,7 +163,27 @@ exports.ussdSMS = async function (req, res, id) {
     }
 };
 
-  exports.sendText = async function (req, res, id) {
+exports.singleSMS = async function (req, res, id) {
+  //let results = req.body; //.params;
+  //console.log(results);
+
+  if (req.body.number == null || req.body.number == undefined) {
+      //No unsent SMS found
+      return res.status(404).send('ERR_NULL_PARAM');
+  } else {
+      let smsSource = req.body.source;
+      let smsText = req.body.text;
+      let smsTo = req.body.number;
+      let smsFrom = req.body.from;
+      let smsType = req.body.type;
+
+      let status = sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
+      console.log('SMS to ' + smsTo + ': ' + status);
+      return res.status(200).send(status);
+  }
+};
+
+exports.sendText = async function (req, res, id) {
     let results = req.body;
     console.log(results);
 

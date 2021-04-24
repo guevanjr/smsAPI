@@ -10,6 +10,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // parse application/json
 app.use(bodyParser.json())
 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.text(/*{ extended: true }*/))
+
 // define a simple route
 app.get('/', (req, res) => {
     res.json({"message": "Welcome to Pontual's SMS Management App"});

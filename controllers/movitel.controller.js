@@ -65,10 +65,6 @@ function sleep(milliseconds) {
 }
 
 function sendSMS(from, to, text, source, type) {
-    // in this example, from & to are integers
-    // We need to convert them to String
-    // and add `+` before
-    
     let smsFrom = from;
     let smsTo   = to;
     let smsText = text;
@@ -83,7 +79,8 @@ function sendSMS(from, to, text, source, type) {
         source_addr_npi: 1,
         registered_delivery: 1
     }, async function(pdu) {
-        //console.log('SMS Submit PDU Status: ', lookupPDUStatusKey(pdu.command_status));
+        console.log('SMS Submit PDU Status: ', lookupPDUStatusKey(pdu.command_status));
+        
         if (pdu.command_status == 0) {
             // Message successfully submitted
             smsId = pdu.message_id;
