@@ -51,7 +51,6 @@ var output = encrypt("819f368f-3212-4cd1-ad27-fb0852cde6cb");
 // Decrypts output
 //console.log(decrypt(output));
 
-
 exports.singleSMS = async function(req, res, id) {
     return res.status(200).send("TEST_SUCCESS");
 };

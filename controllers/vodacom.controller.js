@@ -147,6 +147,20 @@ session.on('pdu', function(pdu){
   }
 })
 
+// Respond to an enquire link
+session.on('enquire_link', function (pdu) {
+  session.send(pdu.response());
+  //logger.info('Responded an enquire link');
+  console.log(new Date().toISOString() + ': Responded an enquire link');
+});
+
+// Response to an enquire link
+session.on('enquire_link_resp', function (pdu) {
+  //counter = 0;
+  //logger.info('Received a response to an enquire link');
+  console.log(new Date().toISOString() + ': Received a response to an enquire link');
+});
+
 exports.ussdSMS = async function (req, res, id) {
     //let results = req.body; //.params;
     //console.log(results);
