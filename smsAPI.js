@@ -20,10 +20,12 @@ app.get('/', (req, res) => {
 
 const movitelRoutes = require('./routes/movitel.routes.js');
 const vodacomRoutes = require('./routes/vodacom.routes.js');
+const publicRoutes = require('./routes/public.routes.js')
 
 // using as middleware
 app.use('/movitel', movitelRoutes);
 app.use('/vodacom', vodacomRoutes);
+app.use('/MessageService', publicRoutes);
 
 // listen for requests
 app.listen(5000, () => {

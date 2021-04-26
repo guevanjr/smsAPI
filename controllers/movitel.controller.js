@@ -1,5 +1,9 @@
 var smpp = require('smpp');
-var session = new smpp.Session({host: '10.229.63.11', port: 9876});
+var session = new smpp.Session({
+    host: '10.229.63.11', 
+    port: 9876,
+    auto_enquire_link_period: 450000
+});
 
 const { Pool } = require('pg')
 const pool = new Pool({
