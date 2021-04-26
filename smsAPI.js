@@ -15,7 +15,9 @@ app.use(bodyParser.text(/*{ extended: true }*/))
 
 // define a simple route
 app.get('/', (req, res) => {
-    res.json({"message": "Welcome to Pontual's SMS Management App"});
+    res.json({
+        "message": "Welcome to Pontual's SMS Management App"
+    });
 });
 
 const movitelRoutes = require('./routes/movitel.routes.js');

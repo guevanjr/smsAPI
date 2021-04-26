@@ -2,7 +2,7 @@ var smpp = require('smpp');
 var session = new smpp.Session({
     host: '10.201.47.17', 
     port: 5016,
-    auto_enquire_link_period: 450000
+    auto_enquire_link_period: 100000
 });
 //const redis = require('redis');
 //const client = redis.createClient();
