@@ -71,6 +71,35 @@ function lookupPDUStatusKey(pduCommandStatus) {
     )
 }
 
+function isHostValid(origin) {
+  let isValid = false;
+
+  console.log('Host: ' + origin);
+
+  if(origin.startsWith('192.168.')) {
+      isValid = true;
+  }
+
+  return isValid;
+}
+
+function isTokenValid(apiToken) {
+  let isValid = false;
+
+  let tokenString = Buffer.from(apiToken.replace('Bearer ', ''), 'base64');
+  let decodedToken = tokenString.toString('utf-8');
+  let tokenArray = decodedToken.split('|');
+  console.log(decodedToken);
+  console.log('Username: ' + tokenArray[0]);
+  console.log('API Key: ' + tokenArray[1]);
+
+  if(tokenArray[0] == 'sap_sms360' && tokenArray[1] == 'kdlAsudl3xerg90ed') {
+      isValid = true;
+  }
+
+  return isValid;
+}
+
 function sendSMS(from, to, text, source, type) {  
     let smsFrom = from;
     let smsTo   = '+'.concat(to);
@@ -92,7 +121,7 @@ function sendSMS(from, to, text, source, type) {
             smsStatus = 'SEND_SUCCESS';
         } else {
             // Message submission Error
-            smsStatus = 'SEND_ERROR';
+            smsStatus = 'SEND_FAILED - Error Code: ' + pdu.command_status;
         }
 
         updateSMSLogs(smsId, smsFrom, smsTo, smsStatus, smsSource, smsType, smsText);
@@ -181,23 +210,27 @@ exports.ussdSMS = async function (req, res, id) {
     }
 };
 
-exports.singleSMS = async function (req, res, id) {
-  //let results = req.body; //.params;
-  //console.log(results);
-
+exports.apiSMS = async function (req, res, id) {
   if (req.body.number == null || req.body.number == undefined) {
       //No unsent SMS found
-      return res.status(404).send('ERR_NULL_PARAM');
+      return res.status(400).send('ERR_NULL_PARAM');
   } else {
-      let smsSource = req.body.source;
-      let smsText = req.body.text;
-      let smsTo = req.body.number;
-      let smsFrom = req.body.from;
-      let smsType = req.body.type;
+      let reqToken = req.header.authorization;
+      let reqHost = req.header.origin;
 
-      let status = sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
-      console.log('SMS to ' + smsTo + ': ' + status);
-      return res.status(200).send(status);
+      if(isTokenValid(reqToken) && isHostValid(reqHost)) {
+          let smsSource = req.body.source;
+          let smsText = req.body.text;
+          let smsTo = req.body.number;
+          let smsFrom = req.body.from;
+          let smsType = req.body.type;
+
+          let status = sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
+          console.log('SMS to ' + smsTo + ': ' + status);
+          return res.status(200).send(status);
+      } else {
+          return res.status(400).send('ERR_TOKEN_HOST');
+      }
   }
 };
 

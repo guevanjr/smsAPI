@@ -32,4 +32,9 @@ app.use('/MessageService', publicRoutes);
 // listen for requests
 app.listen(5000, () => {
     console.log("SMS Server is listening on port 5000\n" + new Date(Date.now()).toISOString().replace('T',' ').substr(0, 19));
+    let data = 'sap_sms360|kdlAsudl3xerg90ed';
+    let buff = Buffer.from(data, 'utf-8');
+    let base64data = buff.toString('base64');
+    console.log(base64data);
+
 });

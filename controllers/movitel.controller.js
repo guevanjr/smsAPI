@@ -164,12 +164,10 @@ session.on('enquire_link_resp', function (pdu) {
 
 
 exports.ussdSMS = async function (req, res, id) {
-    //let results = req.body; //.params;
-    //console.log(results);
 
     if (req.body.number == null || req.body.number == undefined) {
         //No unsent SMS found
-        return res.status(404).send('Nenhum registo encontrado!');
+        return res.status(400).send('Nenhum registo encontrado!');
     } else {
         let smsSource = req.body.source;
         let smsText = req.body.text;
@@ -180,8 +178,6 @@ exports.ussdSMS = async function (req, res, id) {
         let status = sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
         console.log('SMS to ' + smsTo + ': ' + status);
         return res.status(200).send(status);
-//        sendSMS(smsFrom, smsTo, smsText, smsSource, smsType);
-//        return res.status(200).send('SMS Submitted');
     }
 };
 
