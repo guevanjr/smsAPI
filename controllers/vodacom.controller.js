@@ -215,8 +215,8 @@ exports.apiSMS = async function (req, res, id) {
       //No unsent SMS found
       return res.status(400).send('ERR_NULL_PARAM');
   } else {
-      let reqToken = req.header.authorization;
-      let reqHost = req.header.origin;
+      let reqToken = req.headers.authorization;
+      let reqHost = req.headers.origin;
 
       if(isTokenValid(reqToken) && isHostValid(reqHost)) {
           let smsSource = req.body.source;
