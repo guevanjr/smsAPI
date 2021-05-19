@@ -22,19 +22,16 @@ app.get('/', (req, res) => {
 
 const movitelRoutes = require('./routes/movitel.routes.js');
 const vodacomRoutes = require('./routes/vodacom.routes.js');
-const publicRoutes = require('./routes/public.routes.js')
+const publicRoutes = require('./routes/public.routes.js');
+const emailRoutes = require('./routes/email.routes.js');
 
 // using as middleware
 app.use('/movitel', movitelRoutes);
 app.use('/vodacom', vodacomRoutes);
 app.use('/MessageService', publicRoutes);
+app.use('/EmailService', emailRoutes);
 
 // listen for requests
 app.listen(5000, () => {
     console.log("SMS Server is listening on port 5000\n" + new Date(Date.now()).toISOString().replace('T',' ').substr(0, 19));
-    //let data = 'sap_sms360|kdlAsudl3xerg90ed';
-    //let buff = Buffer.from(data, 'utf-8');
-    //let base64data = buff.toString('base64');
-    //console.log(base64data);
-
 });

@@ -72,6 +72,8 @@ function isHostValid(origin) {
   let ipArray = [
       '192.168.30.119',   // SAP Produtivo
       '192.168.30.121',   // SAP Qualidade
+      '192.168.30.132',   // SAP Dev
+      '41.77.134.148',    // SAP - IP Publico
       '197.219.113.211',   // My Laptop @ ITGEST network
       '197.237.202.144'   // My Laptop @ Huawei Mate Hotspot (via Vodacom)
   ]
@@ -93,9 +95,9 @@ function isTokenValid(apiToken) {
   let decodedToken = tokenString.toString('utf-8');
   let tokenArray = decodedToken.split('|');
 
-  //console.log(decodedToken);
-  //console.log('Username: ' + tokenArray[0]);
-  //console.log('API Key: ' + tokenArray[1]);
+  console.log(decodedToken);
+  console.log('Username: ' + tokenArray[0]);
+  console.log('API Key: ' + tokenArray[1]);
 
   if(tokenArray[0] == 'sap_sms360' && tokenArray[1] == 'kdlAsudl3xerg90ed') {
       isValid = true;
